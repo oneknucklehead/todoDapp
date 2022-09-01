@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import detectProvider from '@metamask/detect-provider'
+import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3'
 import Task from './components/Task'
-import { loadContract } from './utils/load-contract'
+import { loadContract } from './utils/load-contract.js'
 
 function App() {
   const [web3Api, setWeb3Api] = useState({
@@ -12,9 +12,9 @@ function App() {
   const [account, setAccount] = useState()
   useEffect(() => {
     const loadProvider = async () => {
-      const provider = await detectProvider()
-      const contract = await loadContract(provider)
+      const provider = await detectEthereumProvider()
       if (provider) {
+        const contract = await loadContract('Tododapp', provider)
         setWeb3Api({
           web3: new Web3(provider),
           provider,
@@ -35,7 +35,7 @@ function App() {
     web3Api.web3 && getAccount()
   }, [web3Api.web3])
 
-  console.log(web3Api.web3)
+  console.log(web3Api)
   return (
     <>
       <div>
