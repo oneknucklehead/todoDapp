@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import detectProvider from '@metamask/detect-provider'
 import Web3 from 'web3'
 import Task from './components/Task'
+import { loadContract } from './utils/load-contract'
 
 function App() {
   const [web3Api, setWeb3Api] = useState({
@@ -12,10 +13,12 @@ function App() {
   useEffect(() => {
     const loadProvider = async () => {
       const provider = await detectProvider()
+      const contract = await loadContract(provider)
       if (provider) {
         setWeb3Api({
           web3: new Web3(provider),
           provider,
+          contract,
         })
       } else {
         console.error('connect to your wallet')
