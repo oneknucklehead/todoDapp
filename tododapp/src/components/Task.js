@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Task = () => {
+const Task = ({ web3Api }) => {
   return <div>Task</div>
 }
 

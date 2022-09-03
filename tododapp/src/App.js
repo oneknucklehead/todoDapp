@@ -8,19 +8,29 @@ function App() {
   const [web3Api, setWeb3Api] = useState({
     provider: null,
     web3: null,
+    contract: null,
+    isProviderLoaded: false,
   })
   const [account, setAccount] = useState()
+  const setAccountListener = (provider) => {
+    provider.on('accountsChanged', (accounts) => setAccount(accounts[0]))
+  }
   useEffect(() => {
     const loadProvider = async () => {
       const provider = await detectEthereumProvider()
       if (provider) {
         const contract = await loadContract('Tododapp', provider)
+        setAccountListener(provider)
         setWeb3Api({
           web3: new Web3(provider),
           provider,
           contract,
+          isProviderLoaded: true,
         })
       } else {
+        setWeb3Api((api) => {
+          return { ...api, isProviderLoaded: true }
+        })
         console.error('connect to your wallet')
       }
     }
@@ -38,23 +48,42 @@ function App() {
   console.log(web3Api)
   return (
     <>
-      <div>
-        Your account is:{' '}
-        {account ? (
-          account
-        ) : (
-          <span>
-            <button
-              onClick={() =>
-                web3Api.provider.request({ method: 'eth_requestAccounts' })
-              }
-            >
-              Connect wallet
-            </button>
-          </span>
-        )}
-      </div>
-      <Task account={account} />
+      {web3Api.isProviderLoaded ? (
+        <div>
+          Your account is:{' '}
+          {account ? (
+            <span>{account}</span>
+          ) : !web3Api.provider ? (
+            <>
+              <span>
+                {' '}
+                No wallet detected, Install{' '}
+                <a
+                  target='_blank'
+                  href='https://docs.metamask.io'
+                  rel='noreferrer'
+                >
+                  metamask
+                </a>
+                .
+              </span>
+            </>
+          ) : (
+            <span>
+              <button
+                onClick={() =>
+                  web3Api.provider.request({ method: 'eth_requestAccounts' })
+                }
+              >
+                Connect wallet
+              </button>
+            </span>
+          )}
+        </div>
+      ) : (
+        <span>Looking for ethereum provider...</span>
+      )}
+      <Task web3Api={web3Api} />
     </>
   )
 }
