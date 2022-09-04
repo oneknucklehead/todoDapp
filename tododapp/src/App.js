@@ -83,7 +83,7 @@ function App() {
       ) : (
         <span>Looking for ethereum provider...</span>
       )}
-      <Task web3Api={web3Api} />
+      <Task web3Api={web3Api} account={account} />
     </>
   )
 }
