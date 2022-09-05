@@ -13,7 +13,13 @@ function App() {
   })
   const [account, setAccount] = useState()
   const setAccountListener = (provider) => {
-    provider.on('accountsChanged', (accounts) => setAccount(accounts[0]))
+    // provider.on('accountsChanged', (accounts) => setAccount(accounts[0]))
+    provider.on('accountsChanged', () => {
+      window.location.reload()
+    })
+    provider.on('chainChanged', () => {
+      window.location.reload()
+    })
   }
   useEffect(() => {
     const loadProvider = async () => {
@@ -45,7 +51,6 @@ function App() {
     web3Api.web3 && getAccount()
   }, [web3Api.web3])
 
-  console.log(web3Api)
   return (
     <>
       {web3Api.isProviderLoaded ? (

@@ -12,6 +12,18 @@ const Task = ({ web3Api, account }) => {
     window.location.reload()
   }
 
+  const updateTask = async (index, completed) => {
+    const { contract } = web3Api
+    await contract.updateTask(index, !completed, { from: account })
+    window.location.reload()
+  }
+
+  const deleteTask = async (index) => {
+    const { contract } = web3Api
+    await contract.isDone(index, { from: account })
+    window.location.reload()
+  }
+
   useEffect(() => {
     const loadNumberTask = async () => {
       const { contract } = web3Api
@@ -20,8 +32,8 @@ const Task = ({ web3Api, account }) => {
       })
       setTotalTasks(_totalTasks)
     }
-    web3Api && loadNumberTask()
-  }, [web3Api])
+    web3Api && account && loadNumberTask()
+  }, [web3Api, account])
 
   useEffect(() => {
     if (totalTasks > 0) {
@@ -30,21 +42,31 @@ const Task = ({ web3Api, account }) => {
       while (i < totalTasks) {
         // eslint-disable-next-line no-loop-func
         const fetchTask = async () => {
-          const task = await contract.getTask(i)
-          setTasks((state) => [...state, task])
+          const { completed, task } = await contract.getTask(i)
+          setTasks((state) => [...state, { task, completed }])
         }
         fetchTask()
         i++
       }
     }
-  }, [totalTasks])
-
+  }, [totalTasks, web3Api])
+  console.log(tasks)
   return (
     <>
-      <div>Total Tasks: {totalTasks}</div>
-      {tasks.map((task, index) => (
-        <div key={index}>{task[1]}</div>
-      ))}
+      {tasks.map(
+        (task, index) =>
+          task.task !== '' && (
+            <div key={index}>
+              <div>
+                {task.task}
+                <button onClick={() => updateTask(index, task.completed)}>
+                  {task.completed === false ? '❎' : '✅'}
+                </button>
+                <button onClick={() => deleteTask(index)}>X</button>
+              </div>
+            </div>
+          )
+      )}
       <div>
         <input
           type='text'
@@ -52,7 +74,6 @@ const Task = ({ web3Api, account }) => {
           onChange={(e) => setNewTask(e.target.value)}
         ></input>
         <button onClick={submitTask}>Add Task</button>
-        {newTask}
       </div>
     </>
   )
