@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import './Task.css'
 
 const Task = ({ web3Api, account }) => {
   const [tasks, setTasks] = useState([])
@@ -53,27 +54,55 @@ const Task = ({ web3Api, account }) => {
   console.log(tasks)
   return (
     <>
-      {tasks.map(
-        (task, index) =>
-          task.task !== '' && (
-            <div key={index}>
-              <div>
-                {task.task}
-                <button onClick={() => updateTask(index, task.completed)}>
-                  {task.completed === false ? '❎' : '✅'}
-                </button>
-                <button onClick={() => deleteTask(index)}>X</button>
-              </div>
+      <div className='card-container'>
+        <div className='card'>
+          <div className='header'> 🗒️ Todo</div>
+          <div className='tasks-wrapper'>
+            <div className='input-container'>
+              <input
+                className='task-input'
+                type='text'
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+              ></input>
+              <button className='btn' onClick={submitTask}>
+                Add
+              </button>
             </div>
-          )
-      )}
-      <div>
-        <input
-          type='text'
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        ></input>
-        <button onClick={submitTask}>Add Task</button>
+            <div className='tasks'>
+              {tasks.map(
+                (task, index) =>
+                  task.task !== '' && (
+                    <div key={index} className='task'>
+                      <div
+                        className={
+                          task.completed
+                            ? 'strike task-content'
+                            : 'task-content'
+                        }
+                      >
+                        {task.task}
+                      </div>
+                      <div className='task-buttons'>
+                        <button
+                          className='btn'
+                          onClick={() => updateTask(index, task.completed)}
+                        >
+                          {task.completed === false ? '❎' : '✅'}
+                        </button>
+                        <button
+                          className='btn'
+                          onClick={() => deleteTask(index)}
+                        >
+                          <i class='fa-solid fa-user'></i>
+                        </button>
+                      </div>
+                    </div>
+                  )
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </>
   )
