@@ -1,45 +1,61 @@
 import React, { useEffect, useState } from 'react'
 import './Task.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheck,
-  faCircleCheck,
-  faTrash,
-  faXmark,
-  faXmarkCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-const Task = ({ web3Api, account }) => {
+const Task = ({ web3Api, account, err, setErr }) => {
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState('')
   const [totalTasks, setTotalTasks] = useState()
 
   const submitTask = async () => {
     const { contract } = web3Api
-    await contract.addTask(newTask, { from: account })
-    setNewTask('')
-    window.location.reload()
+    try {
+      await contract.addTask(newTask, { from: account })
+      setNewTask('')
+      setErr('')
+      window.location.reload()
+    } catch (error) {
+      console.error(error.message)
+      setErr(error.message)
+    }
   }
 
   const updateTask = async (index, completed) => {
     const { contract } = web3Api
-    await contract.updateTask(index, !completed, { from: account })
-    window.location.reload()
+    try {
+      await contract.updateTask(index, !completed, { from: account })
+
+      window.location.reload()
+    } catch (error) {
+      console.error(error.message)
+      setErr(error.message)
+    }
   }
 
   const deleteTask = async (index) => {
     const { contract } = web3Api
-    await contract.isDone(index, { from: account })
-    window.location.reload()
+    try {
+      await contract.isDone(index, { from: account })
+      window.location.reload()
+    } catch (error) {
+      console.error(error.message)
+      setErr(error.message)
+    }
   }
 
   useEffect(() => {
     const loadNumberTask = async () => {
       const { contract } = web3Api
-      const _totalTasks = await contract?.totalTasks().then((task) => {
-        return task.toNumber()
-      })
-      setTotalTasks(_totalTasks)
+      try {
+        const _totalTasks = await contract?.totalTasks().then((task) => {
+          return task.toNumber()
+        })
+        setTotalTasks(_totalTasks)
+      } catch (error) {
+        console.error(error.message)
+        setErr(error.message)
+      }
     }
     web3Api && account && loadNumberTask()
   }, [web3Api, account])
@@ -59,7 +75,6 @@ const Task = ({ web3Api, account }) => {
       }
     }
   }, [totalTasks, web3Api])
-  console.log(tasks)
   return (
     <>
       <div className='card-container'>
@@ -73,10 +88,15 @@ const Task = ({ web3Api, account }) => {
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
               ></input>
-              <button className='btn' onClick={submitTask}>
+              <button
+                className='btn'
+                onClick={submitTask}
+                disabled={account ? false : true}
+              >
                 Add
               </button>
             </div>
+            {err && <span className='err'>{err}</span>}
             <div className='tasks'>
               {tasks.map(
                 (task, index) =>

@@ -3,7 +3,8 @@ import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3'
 import Task from './components/Task'
 import { loadContract } from './utils/load-contract.js'
-
+import img from './assets/metamask.png'
+import './App.css'
 function App() {
   const [web3Api, setWeb3Api] = useState({
     provider: null,
@@ -11,6 +12,8 @@ function App() {
     contract: null,
     isProviderLoaded: false,
   })
+  const [err, setErr] = useState()
+
   const [account, setAccount] = useState()
   const setAccountListener = (provider) => {
     // provider.on('accountsChanged', (accounts) => setAccount(accounts[0]))
@@ -54,15 +57,16 @@ function App() {
   return (
     <>
       {web3Api.isProviderLoaded ? (
-        <div>
-          Your account is:{' '}
+        <div className='login'>
+          <span className='img-container'>
+            <img className='img-logo' src={img} alt='metamask-logo' />
+          </span>
           {account ? (
-            <span>{account}</span>
+            <span className='account-container'>{account}</span>
           ) : !web3Api.provider ? (
             <>
-              <span>
-                {' '}
-                No wallet detected, Install{' '}
+              <span className='account-container'>
+                No wallet detected, Install
                 <a
                   target='_blank'
                   href='https://docs.metamask.io'
@@ -74,21 +78,36 @@ function App() {
               </span>
             </>
           ) : (
-            <span>
+            <span className='account-container'>
               <button
-                onClick={() =>
-                  web3Api.provider.request({ method: 'eth_requestAccounts' })
-                }
+                className='btn-connect'
+                onClick={async () => {
+                  try {
+                    await web3Api.provider.request({
+                      method: 'eth_requestAccounts',
+                    })
+                  } catch (error) {
+                    console.error(error.message)
+                    setErr(error.message)
+                  }
+                }}
               >
-                Connect wallet
+                Connect Wallet
               </button>
             </span>
           )}
         </div>
       ) : (
-        <span>Looking for ethereum provider...</span>
+        <div className='login'>
+          <span className='img-container'>
+            <img className='img-logo' src={img} alt='metamask-logo' />
+          </span>
+          <span className='account-container'>
+            Looking for ethereum provider...
+          </span>
+        </div>
       )}
-      <Task web3Api={web3Api} account={account} />
+      <Task web3Api={web3Api} account={account} err={err} setErr={setErr} />
     </>
   )
 }
