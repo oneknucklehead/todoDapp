@@ -40,11 +40,11 @@
   padding: 10px;
   font-size: 1rem;
   border-radius: 2rem;
+  color: #9a9aeb;
 }
 .task-input:focus {
   outline: none;
   border: 1px solid #c0c0f2;
-  color: #9a9aeb;
 }
 .tasks-wrapper {
   display: flex;
@@ -63,6 +63,8 @@
 .task {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
   /* border-radius: 10px; */
 }
 .task-content {
@@ -91,6 +93,30 @@
   text-decoration: line-through;
   text-decoration-color: #9a9aeb;
 }
+.task-buttons {
+  display: flex;
+}
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  margin: 0 5px;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #e6e6fa;
+  border-radius: 2rem;
+}
+::-webkit-scrollbar-thumb {
+  background: #c0c0f2;
+  border-radius: 2rem;
+}
+
 @media screen and (max-width: 400px) {
   .card {
     width: 100%;

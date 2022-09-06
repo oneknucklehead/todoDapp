@@ -3,7 +3,6 @@ import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3'
 import Task from './components/Task'
 import { loadContract } from './utils/load-contract.js'
-import Background from './components/Background'
 
 function App() {
   const [web3Api, setWeb3Api] = useState({
@@ -54,9 +53,6 @@ function App() {
 
   return (
     <>
-      {/* <section className='pattern'>
-        <Background></Background>
-      </section> */}
       {web3Api.isProviderLoaded ? (
         <div>
           Your account is:{' '}

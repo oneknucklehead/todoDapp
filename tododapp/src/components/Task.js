@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import './Task.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCheck,
+  faCircleCheck,
+  faTrash,
+  faXmark,
+  faXmarkCircle,
+} from '@fortawesome/free-solid-svg-icons'
 
 const Task = ({ web3Api, account }) => {
   const [tasks, setTasks] = useState([])
@@ -85,16 +93,20 @@ const Task = ({ web3Api, account }) => {
                       </div>
                       <div className='task-buttons'>
                         <button
-                          className='btn'
+                          className='btn circle'
                           onClick={() => updateTask(index, task.completed)}
                         >
-                          {task.completed === false ? '❎' : '✅'}
+                          {task.completed === false ? (
+                            <FontAwesomeIcon icon={faCheck} />
+                          ) : (
+                            <FontAwesomeIcon icon={faXmark} />
+                          )}
                         </button>
                         <button
-                          className='btn'
+                          className='btn circle'
                           onClick={() => deleteTask(index)}
                         >
-                          <i class='fa-solid fa-user'></i>
+                          <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </div>
                     </div>
