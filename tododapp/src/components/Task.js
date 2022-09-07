@@ -5,6 +5,7 @@ import { faCheck, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 const Task = ({ web3Api, account, err, setErr }) => {
   const [tasks, setTasks] = useState([])
+  const [tasksCopy, setTasksCopy] = useState([])
   const [newTask, setNewTask] = useState('')
   const [totalTasks, setTotalTasks] = useState()
 
@@ -30,6 +31,22 @@ const Task = ({ web3Api, account, err, setErr }) => {
     } catch (error) {
       console.error(error.message)
       setErr(error.message)
+    }
+  }
+
+  const filter = (get) => {
+    setTasksCopy(JSON.parse(JSON.stringify(tasks)))
+    var newarr = tasksCopy
+    if (get === 'complete') {
+      newarr = tasksCopy.filter((task) => task.completed)
+      setTasksCopy(newarr)
+    }
+    if (get === 'incomplete') {
+      newarr = tasksCopy.filter((task) => !task.completed)
+      setTasksCopy(newarr)
+    }
+    if (get === 'all') {
+      setTasksCopy(JSON.parse(JSON.stringify(tasks)))
     }
   }
 
@@ -69,6 +86,7 @@ const Task = ({ web3Api, account, err, setErr }) => {
         const fetchTask = async () => {
           const { completed, task } = await contract.getTask(i)
           setTasks((state) => [...state, { task, completed }])
+          // setTasksCopy((state) => [...state, { task, completed }])
         }
         fetchTask()
         i++
@@ -77,6 +95,19 @@ const Task = ({ web3Api, account, err, setErr }) => {
   }, [totalTasks, web3Api])
   return (
     <>
+      <div className='filter-container'>
+        <div className='filter'>
+          <button className='btn' onClick={() => filter('all')}>
+            All
+          </button>
+          <button className='btn' onClick={() => filter('complete')}>
+            Complete
+          </button>
+          <button className='btn' onClick={() => filter('incomplete')}>
+            Incomplete
+          </button>
+        </div>
+      </div>
       <div className='card-container'>
         <div className='card'>
           <div className='header'> 🗒️ Todo</div>
@@ -98,7 +129,7 @@ const Task = ({ web3Api, account, err, setErr }) => {
             </div>
             {err && <span className='err'>{err}</span>}
             <div className='tasks'>
-              {tasks.map(
+              {tasksCopy.map(
                 (task, index) =>
                   task.task !== '' && (
                     <div key={index} className='task'>

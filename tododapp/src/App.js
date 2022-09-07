@@ -41,6 +41,7 @@ function App() {
           return { ...api, isProviderLoaded: true }
         })
         console.error('connect to your wallet')
+        setErr('connect to your wallet')
       }
     }
     loadProvider()
@@ -66,7 +67,7 @@ function App() {
           ) : !web3Api.provider ? (
             <>
               <span className='account-container'>
-                No wallet detected, Install
+                No wallet detected, Install{' '}
                 <a
                   target='_blank'
                   href='https://docs.metamask.io'
