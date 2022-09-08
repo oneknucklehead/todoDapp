@@ -35,14 +35,13 @@ const Task = ({ web3Api, account, err, setErr }) => {
   }
 
   const filter = (get) => {
-    setTasksCopy(JSON.parse(JSON.stringify(tasks)))
-    var newarr = tasksCopy
+    var newarr = JSON.parse(JSON.stringify(tasks))
     if (get === 'complete') {
-      newarr = tasksCopy.filter((task) => task.completed)
+      newarr = newarr.filter((task) => task.completed)
       setTasksCopy(newarr)
     }
     if (get === 'incomplete') {
-      newarr = tasksCopy.filter((task) => !task.completed)
+      newarr = newarr.filter((task) => !task.completed)
       setTasksCopy(newarr)
     }
     if (get === 'all') {
@@ -86,7 +85,7 @@ const Task = ({ web3Api, account, err, setErr }) => {
         const fetchTask = async () => {
           const { completed, task } = await contract.getTask(i)
           setTasks((state) => [...state, { task, completed }])
-          // setTasksCopy((state) => [...state, { task, completed }])
+          setTasksCopy((state) => [...state, { task, completed }])
         }
         fetchTask()
         i++
@@ -129,7 +128,7 @@ const Task = ({ web3Api, account, err, setErr }) => {
             </div>
             {err && <span className='err'>{err}</span>}
             <div className='tasks'>
-              {tasksCopy.map(
+              {tasksCopy?.map(
                 (task, index) =>
                   task.task !== '' && (
                     <div key={index} className='task'>

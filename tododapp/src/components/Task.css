@@ -2,6 +2,13 @@
   display: flex;
   justify-content: center;
 }
+.filter {
+  display: flex;
+  justify-content: space-evenly;
+  /* background: #fff; */
+  padding: 0.5rem 0;
+  width: 400px;
+}
 .card-container {
   display: flex;
   justify-content: center;
